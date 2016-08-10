@@ -53,3 +53,12 @@ checksum - 2 byte checksum. The algorithm is still unclear to me, but luckily it
 When receiving a reply to a request, the request contains essentially the same header (except the data length)
 used in the request.
 
+### Get Track Descriptors
+
+To get an overview of what's been stored in the watch's memory, you can make a "Get Track Descriptors" request.
+The exact message to be sent:
+
+0x48, 0x59, 0x03, 0x01, 0x00, 0x00, ?, ?
+
+The response message you'll get:
+

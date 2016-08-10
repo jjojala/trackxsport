@@ -21,3 +21,5 @@ the "Tracker" software shipped with the watch. In practice the serial communicat
 (VCP), implemented by the
 [CP210x USB to UART Bridge VCP Driver](https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx).
 The handshaking parameters were: baudrate=57600, databits=8, parity=no, stop-bits=1.
+
+To find out more about the protocol, please refer to sources.

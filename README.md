@@ -7,7 +7,7 @@ The particular watch is cheap GD-003 sports watch from Taiwanese company Chou Ch
 ## Disclaimer
 
 The watch reports its revision as E3.628 (dated 2014/06/30). This can be seen from watch "Infor" menu. It is very much possible
-the protocol described here, and the utility itself work with other versions of the watch. However, obviously as the protocol have been reverse engineered by monitoring the transferred data I cannot give any guarantees. Nor I cannot give any sort of guarantees, that the software do not make any harm to your watch. Use at your own risk!
+the protocol described here, and the utility itself work with other versions of the watch. However, obviously as the protocol have been reverse engineered by monitoring the transferred data I cannot give any guarantees. Further I cannot give any sort of guarantees, that the software do not make any harm to your watch. 
 
-
+Use at your own risk!
 

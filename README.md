@@ -32,3 +32,39 @@ the "Tracker" software shipped with the watch. In practice the serial communicat
 The handshaking parameters were: baudrate=57600, databits=8, parity=no, stop-bits=1.
 
 To find out more about the protocol, please refer to sources.
+
+## Compiling
+
+You'll need
+* JavaSE SDK 8 (for building)
+* JavaSE 8 (for running)
+* Maven (3.x will do, I guess)
+* git client
+
+### Getting the sources
+
+Type:
+```
+# git clone http://github.com/jjojala/trackxsport
+```
+
+### Compiling
+
+Type:
+
+```
+# cd trackxsport
+# mvn clean install
+```
+
+### Running
+
+Type:
+```
+# target\trackxsport-1.0.0-SNAPSHOT.jar
+```
+
+The utility expects the watch being connected through COM4 (hardcoded,
+you may want to change it in org.gemini.trackxsport.Main). The result will
+appear in the GPX-file at the current working directory.
+

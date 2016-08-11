@@ -15,9 +15,9 @@
  */
 package org.gemini.trackxsport;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.GregorianCalendar;
-import java.util.Stack;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -33,14 +33,14 @@ public class GpxWriter {
         }
     }
     
-    private final PrintWriter writer;
+    private final PrintStream out;
     private final GregorianCalendar beginTime;
 
-    public GpxWriter(final PrintWriter writer, final GregorianCalendar beginTime) {
-        this.writer = writer;
+    public GpxWriter(final PrintStream out, final GregorianCalendar beginTime) {
+        this.out = out;
         this.beginTime = beginTime;
 
-        this.writer.format(
+        this.out.format(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
                 "<gpx xmlns=\"http://www.topografix.com/GPX/1/1\"\n" +
                 "    xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\"\n" +
@@ -57,45 +57,45 @@ public class GpxWriter {
     }
     
     public GpxWriter beginTrack(final int trackId) {
-        writer.format("  <trk>\n");
-        writer.println("    <src>GD-003 Sports Watch /w GPS and BT heart rate monitor, rev E3.628</src>");
-        writer.format("    <number>%d</number>\n", trackId);
+        out.format("  <trk>\n");
+        out.println("    <src>GD-003 Sports Watch /w GPS and BT heart rate monitor, rev E3.628</src>");
+        out.format("    <number>%d</number>\n", trackId);
         
         return this;
     }
     
     public GpxWriter endTrack() {
-        writer.format("  </trk>\n");
+        out.format("  </trk>\n");
         
         return this;
     }
     
     public GpxWriter beginTrackSegment() {
-        writer.println("      <trkseg>");
+        out.println("      <trkseg>");
         return this;
     }
     
     public GpxWriter endTrackSegment() {
-        writer.println("      </trkseg>");
+        out.println("      </trkseg>");
         return this;
     }
     
     public GpxWriter writeWaypoint(final Waypoint waypoint) {
         beginTime.add(GregorianCalendar.SECOND, waypoint.getDelay());
-        writer.format("        <trkpt lat=\"%f\" lon=\"%f\">\n",
+        out.format("        <trkpt lat=\"%f\" lon=\"%f\">\n",
                 waypoint.getLatitude(), waypoint.getLongitude());
-        writer.format("          <ele>%d</ele>\n", waypoint.getAltitude());
-        writer.format("          <time>%s</time>\n",
+        out.format("          <ele>%d</ele>\n", waypoint.getAltitude());
+        out.format("          <time>%s</time>\n",
                 xmlTypes.newXMLGregorianCalendar(beginTime));
-        writer.println("          <extensions>");
-        writer.format("            <gpxtpx:hr>%d</gpxtpx:hr>\n", waypoint.getHeartRate());
-        writer.println("          </extensions>");
-        writer.println("        </trkpt>");
+        out.println("          <extensions>");
+        out.format("            <gpxtpx:hr>%d</gpxtpx:hr>\n", waypoint.getHeartRate());
+        out.println("          </extensions>");
+        out.println("        </trkpt>");
 
         return this;
     }
     
     public void close() {
-        writer.append("</gpx>\n");
+        out.append("</gpx>\n");
     }
 }

@@ -54,37 +54,26 @@ public class Main {
             {
                 final Track track = Track.getTrack(port, DataUtil.DEFAULT_WAIT_TIME);
                 System.out.format("Found data for track %02d\n", track.getTrackId());
+
                 final TrackDescriptor desc = tracks.get(track.getTrackId());
                 final GregorianCalendar trackTime = desc.getTrackBeginTime();
+                
                 final File gpx = new File(
                     new SimpleDateFormat(String.format(
                             "YYYY-MM-dd-\'%02d.gpx\'", track.getTrackId()))
                             .format(desc.getTrackBeginTime().getTime()));
-                final PrintStream out = new PrintStream(new FileOutputStream(gpx));
-                System.out.format("Creating %s...\n", gpx.getAbsoluteFile());
-                                
-                out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
-                out.println("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" "
-                        + "\n\txmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" "
-                        + "\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-                        + "\n\tcreator=\"http://github.com/jjojala/trackxsport\" "
-                        + "\n\tversion=\"1.1\" "
-                        + "\n\txsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 "
-                        + "\n\t\thttp://www.topografix.com/GPX/1/1/gpx.xsd "
-                        + "\n\t\thttp://www.garmin.com/xmlschemas/TrackPointExtension/v1 "
-                        + "\n\t\thttp://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd\">");
-                out.println("  <metadata>");
-                out.format("     <time>%s</time>\n", formatter.format(trackTime.getTime()));
-                out.println("  </metadata>");
 
-                out.format("  <trk>\n");
-                out.println("    <src>GD-003 Sports Watch /w GPS and BT heart rate monitor, rev E3.628</src>");
-                out.format("    <number>%d</number>\n", track.getTrackId());
+                System.out.format("Creating %s...\n", gpx.getAbsoluteFile());
+                
+                final GpxWriter out = new GpxWriter(new PrintStream(
+                        new FileOutputStream(gpx)), trackTime);
+                                
+                out.beginTrack(track.getTrackId());
 
                 int blockCnt = 0, wpTotal = 0;
                 final Iterator<TrackSegment> segments = track.segments();
                 while (segments.hasNext()) {
-                    out.println("    <trkseg>");                
+                    out.beginTrackSegment();
                     ++blockCnt;
                     final TrackSegment segment = segments.next();
                     
@@ -92,29 +81,17 @@ public class Main {
                     final Iterator<Waypoint> waypoints = segment.waypoints();
                     while (waypoints.hasNext()) {
                         ++wpCount;
-                        final Waypoint waypoint = waypoints.next();
-                        trackTime.add(GregorianCalendar.SECOND, waypoint.getDelay());
-
-                        out.format( "      <trkpt lat=\"%f\" lon=\"%f\">\n",
-                                waypoint.getLatitude(), waypoint.getLongitude());
-                        out.format( "        <ele>%d</ele>\n", waypoint.getAltitude());
-                        out.format( "        <time>%s</time>\n", formatter.format(trackTime.getTime()));
-                        out.println("        <extensions>");
-                        out.format( "          <gpxtpx:hr>%d</gpxtpx:hr>\n", waypoint.getHeartRate());
-                        out.println("        </extensions>");
-                        out.println("      </trkpt>");
+                        out.writeWaypoint(waypoints.next());
                     }
                     
                     System.out.format("Block %d - %d waypoints\n", blockCnt, wpCount);
                     wpTotal += wpCount;
-                    out.println("    </trkseg>");
+                    out.endTrackSegment();
                 }
                 
                 System.out.format("Processed %d waypoints\n", wpTotal);
                 
-                out.println("  </trk>");
-                out.println("</gpx>");
-                out.flush();
+                out.endTrack();
                 out.close();
             }
         }

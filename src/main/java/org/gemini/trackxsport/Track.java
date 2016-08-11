@@ -1,5 +1,17 @@
 /*
- * 
+ * Copyright (c) 2016 Jari Ojala (jari.ojala@iki.fi)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.gemini.trackxsport;
 
@@ -31,7 +43,11 @@ import jssc.SerialPortException;
  * </tt></pre>
  *
  * <p>The reply is one, or typically several track segment packages,
- * described further in {@link TrackSegment}.
+ * described further in {@link TrackSegment}. Note, that even though
+ * the request supports giving the desired track identifier as a parameter,
+ * the device seems to reply with the most latest track it has recorded, i.e.
+ * the given parameter is not honored. This seems to an obvious bug in the
+ * device firmware (and may be fixed in some forthcoming versions).
  */
 public final class Track {
     
@@ -47,17 +63,11 @@ public final class Track {
             throw new SerialPortException(port.getPortName(),
                     "Track.requestTrack", "Writing request failed");
         
-        return new Track(port, waitTime);
+        return new Track(DataUtil.readBytes(port, waitTime));
     }
 
-    private Track(final SerialPort port, final long waitTime) 
-            throws SerialPortException, InterruptedException {
-        
-        if (!port.writeBytes(REQUEST_MESSAGE))
-            throw new SerialPortException(port.getPortName(),
-                    "TrackDescriptorReader<init>", "Writing bytes failed");
-        
-        data = DataUtil.readBytes(port, waitTime);
+    private Track(final byte[] data) {        
+        this.data = data;
     }
     
     public int getTrackId() {
@@ -82,9 +92,9 @@ public final class Track {
                 if (!hasNext())
                     throw new NoSuchElementException();
 
-                final int length = ProtocolUtil.readUInt16(data,
-                            offset + ProtocolUtil.MESSAGE_SIZE_OFFS)
-                        + ProtocolUtil.MESSAGE_SIZE_PADDING;
+                final int length = DataUtil.readUInt16(data,
+                            offset + DataUtil.MESSAGE_SIZE_OFFS)
+                        + DataUtil.MESSAGE_SIZE_PADDING;
                 final TrackSegment block = new TrackSegment(data, offset, length);
                 offset += length;
 

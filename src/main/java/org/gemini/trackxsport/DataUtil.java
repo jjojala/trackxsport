@@ -1,5 +1,17 @@
 /*
- * 
+ * Copyright (c) 2016 Jari Ojala (jari.ojala@iki.fi)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.gemini.trackxsport;
 
@@ -12,6 +24,10 @@ public final class DataUtil {
     
     public static final long DEFAULT_WAIT_TIME = 500;
     
+    public static final int
+            MESSAGE_SIZE_PADDING = 0x08, /* size+padding = total length */
+            MESSAGE_SIZE_OFFS = 0x04;   /* uint16 */
+
     public static byte[] concat(final byte[] result, final List<byte[]> buffers) {
         if (result == null || result.length == 0)
             return result;
@@ -44,16 +60,30 @@ public final class DataUtil {
 
         return concat(new byte[length], buffers);
     }
+
+    public static int readUInt16(final byte[] data, int offset) {
+        return ((data[offset+1] & 0xff) << 8) | (data[offset] & 0xff);
+    }
+
+    public static int readInt32(final byte[] b, int offset) {
+        return ((b[offset + 3] & 0xff) << 24) | ((b[offset + 2] & 0xff) << 16)
+                | ((b[offset + 1] & 0xff) << 8) | (b[offset] & 0xff);
+    }
+
+    public static float readFloat(final byte[] b, int offset) {
+        return Float.intBitsToFloat(readInt32(b, offset));
+    }
     
-    public static String dump(final byte[] data, final int offset, final int count) {
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append(String.format("data.length=%d, data[%d]={ ", data.length, offset));
-        for (int i = 0; i < count; i++) {
-            buffer.append(String.format("0x%02x ", data[offset+i]));
+    public static StringBuilder dump(final StringBuilder buffer,
+            final byte[] data, final int offset, final int length) {
+
+        for (int i = 0; i < length; i++) {
+            if (i % 16 == 0)
+                buffer.append("\n");
+            buffer.append(String.format("%02x "));
         }
-        buffer.append(" ...");
-        
-        return buffer.toString();
+
+        return buffer;
     }
 
     private DataUtil() {

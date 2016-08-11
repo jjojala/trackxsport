@@ -1,5 +1,17 @@
 /*
- * 
+ * Copyright (c) 2016 Jari Ojala (jari.ojala@iki.fi)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.gemini.trackxsport;
 
@@ -44,26 +56,26 @@ public final class Waypoint {
     }
 
     public final float getLongitude() {
-        return ProtocolUtil.readFloat(data, offset + LONGITUDE);
+        return DataUtil.readFloat(data, offset + LONGITUDE);
     }
 
     public final float getLatitude() {
-        return ProtocolUtil.readFloat(data, offset + LATITUDE);
+        return DataUtil.readFloat(data, offset + LATITUDE);
     }
 
     public final int getSpeed() {
-        return ProtocolUtil.readUInt16(data, offset + SPEED);
+        return DataUtil.readUInt16(data, offset + SPEED);
     }
 
     public final int getAltitude() {
-        return ProtocolUtil.readUInt16(data, offset + ALTITUDE);
+        return DataUtil.readUInt16(data, offset + ALTITUDE);
     }
 
     public final int getDelay() {
-        return ProtocolUtil.readUInt16(data, offset + ELAPSED);
+        return DataUtil.readUInt16(data, offset + ELAPSED);
     }
 
     public final int getHeartRate() {
-        return ProtocolUtil.readUInt16(data, offset + HEARTRATE);
+        return DataUtil.readUInt16(data, offset + HEARTRATE);
     }
 }

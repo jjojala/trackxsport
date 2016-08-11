@@ -1,5 +1,17 @@
 /*
- * 
+ * Copyright (c) 2016 Jari Ojala (jari.ojala@iki.fi)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package org.gemini.trackxsport;
 
@@ -52,17 +64,27 @@ public class Main {
                 System.out.format("Creating %s...\n", gpx.getAbsoluteFile());
                                 
                 out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
-                out.println("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" creator=\"TrackSport\" version=\"1.1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd\">");
+                out.println("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" "
+                        + "\n\txmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" "
+                        + "\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+                        + "\n\tcreator=\"http://github.com/jjojala/trackxsport\" "
+                        + "\n\tversion=\"1.1\" "
+                        + "\n\txsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 "
+                        + "\n\t\thttp://www.topografix.com/GPX/1/1/gpx.xsd "
+                        + "\n\t\thttp://www.garmin.com/xmlschemas/TrackPointExtension/v1 "
+                        + "\n\t\thttp://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd\">");
                 out.println("  <metadata>");
-                out.format("     <name>%s</name>\n", formatter.format(trackTime.getTime()));
+                out.format("     <time>%s</time>\n", formatter.format(trackTime.getTime()));
                 out.println("  </metadata>");
 
-                out.println("  <trk>");
-                out.println("    <trkseg>");
+                out.format("  <trk>\n");
+                out.println("    <src>GD-003 Sports Watch /w GPS and BT heart rate monitor, rev E3.628</src>");
+                out.format("    <number>%d</number>\n", track.getTrackId());
 
                 int blockCnt = 0, wpTotal = 0;
                 final Iterator<TrackSegment> segments = track.segments();
                 while (segments.hasNext()) {
+                    out.println("    <trkseg>");                
                     ++blockCnt;
                     final TrackSegment segment = segments.next();
                     
@@ -85,11 +107,11 @@ public class Main {
                     
                     System.out.format("Block %d - %d waypoints\n", blockCnt, wpCount);
                     wpTotal += wpCount;
+                    out.println("    </trkseg>");
                 }
                 
                 System.out.format("Processed %d waypoints\n", wpTotal);
                 
-                out.println("    </trkseg>");
                 out.println("  </trk>");
                 out.println("</gpx>");
                 out.flush();

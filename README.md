@@ -13,12 +13,12 @@ The watch reported firmware version E3.628, dated 2014/06/30
 
 ## Disclaimer
 
-The utility worked for my watch and didn't made any harm to my device,
-even though I developed the utility with "error-and-try" -method which
-obviosly produces tons of broken requests to the watch.
+The utility worked for my watch and didn't made any harm to device,
+even though I used "error-and-try" -method which obviosly produced
+tons of broken requests to the watch.
 
 However, I cannot give any guarantees that the utility works
-for you, and do not make any harm to your device. 
+for you, and doesn't make any harm.
 
 *Use at your own risk!*
 

@@ -66,8 +66,14 @@ import java.util.NoSuchElementException;
  *  | 0x04   | uint16 | data length (data begins at offset 0x06, checksum
  *  |                   bytes excluded.
  *  | 0x06   | byte   | track identifier
- *  | 0x08   | byte   | segment number
- *  | 0x0a   | uint16 | number of waypoints in this segment.
+ *  | 0x08   | byte   | segment number (?)
+ *  | 0x0a   | uint16 | number of waypoints in this segment (?)
+ *  | 0x0e   | byte   | years after 2000 for the last waypoint
+ *  | 0x0f   | byte   | month for the last waypoint
+ *  | 0x10   | byte   | day of month for the last waypoint
+ *  | 0x11   | byte   | hours for the last waypoint (GMT)
+ *  | 0x12   | byte   | minutes for the last waypoint
+ *  | 0x13   | byte   | seconds for the last waypoint
  *  | 0x26   |        | offset of first waypoint. See {@link Waypoint}.
  *  |        | byte   | checksum, unknown algorithm, currently not verified
  *  |        | byte   | checksum, unknown algorithm
